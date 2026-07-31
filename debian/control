@@ -1,0 +1,28 @@
+Source: postout
+Section: mail
+Priority: optional
+Maintainer: DEVOPS CY <info@devops.com.cy>
+Homepage: https://devops.com.cy
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-python,
+ python3
+Standards-Version: 4.7.4
+Rules-Requires-Root: no
+
+Package: postout
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ${python3:Depends},
+ python3 (>= 3.10),
+ passwd
+Recommends:
+ sudo
+Description: script-friendly SMTP command-line mailer
+ Postout is a Linux command-line mailer for scripts, monitoring jobs,
+ administrators, and interactive use.
+ .
+ It supports personal and shared system SMTP profiles, authenticated
+ and unauthenticated relays, plain-text and HTML messages, attachments,
+ and To, Cc, and Bcc recipients.

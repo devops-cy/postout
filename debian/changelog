@@ -1,0 +1,54 @@
+postout (1.0.0-1) unstable; urgency=medium
+
+  * Publish the first stable Postout release.
+  * Add personal and shared system SMTP profiles.
+  * Support authenticated and unauthenticated SMTP delivery.
+  * Support SSL/TLS, STARTTLS, HTML, attachments, CC, and BCC.
+  * Add interactive profile configuration and testing.
+  * Add Debian packaging, manual page, and complete documentation.
+  * Release Postout under the MIT-0 license.
+
+ -- DEVOPS CY <info@devops.com.cy>  Fri, 31 Jul 2026 23:02:29 +0300
+
+postout (0.1.0-5) unstable; urgency=medium
+
+  * Use a distinct magenta highlight for suggested Unix users.
+  * Add missing ANSI magenta support.
+  * Validate terminal color names before release.
+
+ -- DEVOPS CY <info@devops.com.cy>  Fri, 31 Jul 2026 22:32:34 +0300
+
+postout (0.1.0-4) unstable; urgency=medium
+
+  * Suggest granting system-profile access to the current sudo user.
+  * Highlight the suggested Unix username in the configuration menu.
+  * Simplify granting access to additional system users.
+
+ -- DEVOPS CY <info@devops.com.cy>  Fri, 31 Jul 2026 22:24:20 +0300
+
+postout (0.1.0-3) unstable; urgency=medium
+
+  * Expand the first-run setup guidance.
+  * Recommend personal profiles for initial setup and testing.
+  * Clarify system-wide profiles for services and server notifications.
+  * Explain access to shared system profiles.
+
+ -- DEVOPS CY <info@devops.com.cy>  Fri, 31 Jul 2026 22:17:20 +0300
+
+postout (0.1.0-2) unstable; urgency=medium
+
+  * Add a concise welcome screen for bare invocation.
+  * Enable terminal line editing when Python readline is available.
+  * Point users to postout --help when setup is incomplete.
+
+ -- DEVOPS CY <info@devops.com.cy>  Fri, 31 Jul 2026 22:02:06 +0300
+
+postout (0.1.0-1) unstable; urgency=medium
+
+  * Initial engineering package.
+  * Install Postout as a private Python command-line application.
+  * Preserve system profiles during ordinary package removal.
+  * Remove system profiles only when the package is purged.
+  * Support Debian 12+, Ubuntu 22.04+, and compatible Linux Mint releases.
+
+ -- DEVOPS CY <info@devops.com.cy>  Fri, 31 Jul 2026 21:32:36 +0300

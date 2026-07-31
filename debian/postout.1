@@ -1,0 +1,228 @@
+.TH POSTOUT 1 "July 2026" "Postout 1.0.0" "User Commands"
+.SH NAME
+postout \- send email through SMTP from scripts, servers, and the command line
+.SH SYNOPSIS
+.B postout
+.RI [ options ]
+.br
+.B postout config
+.RI [ \-\-system ]
+.br
+.B postout \-\-profile\-list
+.br
+.B postout \-\-help
+.SH DESCRIPTION
+.B Postout
+is a command-line SMTP mail client designed for scripts, monitoring jobs,
+server notifications, and interactive command-line use.
+.PP
+SMTP settings can be stored in reusable profiles, keeping connection details
+and passwords out of shell history and scripts.
+.PP
+Postout supports personal profiles, shared system profiles, authenticated and
+unauthenticated SMTP, SSL/TLS, STARTTLS, plain SMTP, HTML mail, plain-text
+mail, multiple recipients, CC, BCC, and file attachments.
+.SH CONFIGURATION
+.TP
+.B postout config
+Open the interactive configuration menu for the current user.
+This is the recommended starting point for initial setup, testing, and
+personal use.
+.TP
+.B postout config \-\-system
+Open the shared system-profile configuration menu.
+Administrator privileges are required.
+.PP
+System profiles are intended for monitoring jobs, services, scheduled tasks,
+and other shared server uses.
+.PP
+Root can use system profiles immediately.
+Other users must be members of the
+.B postout
+Unix group.
+.SH PROFILE SELECTION
+A named personal profile takes precedence over a system profile with the same
+name.
+.PP
+When no profile is explicitly selected:
+.IP \(bu 2
+A single personal profile is selected automatically.
+.IP \(bu 2
+If no personal profile exists, a single system profile is selected
+automatically.
+.IP \(bu 2
+If multiple available profiles exist, use
+.BR \-\-profile .
+.TP
+.BI \-\-profile " NAME"
+Use the named SMTP profile.
+.TP
+.B \-\-profile\-list
+List the SMTP profiles available to the current user.
+.TP
+.BI \-\-profiles\-file " FILE"
+Use an alternative profiles file.
+This is an advanced option.
+.SH COMMON OPTIONS
+.TP
+.BI \-\-to " ADDRESS"
+Add a primary recipient.
+Multiple recipients may be supplied where supported by the command syntax.
+.TP
+.BI \-\-cc " ADDRESS"
+Add a carbon-copy recipient.
+.TP
+.BI \-\-bcc " ADDRESS"
+Add a blind-carbon-copy recipient.
+BCC addresses are used for SMTP delivery but are not written into the
+message headers.
+.TP
+.BI \-\-subject " TEXT"
+Set the message subject.
+.TP
+.BI \-\-body " TEXT"
+Set the plain-text message body.
+.TP
+.BI \-\-html " HTML"
+Set an HTML message body.
+Postout generates a plain-text alternative automatically.
+.TP
+.BI \-\-attach " FILE"
+Attach a regular file to the message.
+The combined attachment size is limited by Postout.
+.TP
+.B \-\-help
+Display the complete command-line help.
+.SH EXAMPLES
+Configure a profile for the current user:
+.PP
+.nf
+.RS
+postout config
+.RE
+.fi
+.PP
+Configure shared profiles for server notifications:
+.PP
+.nf
+.RS
+postout config \-\-system
+.RE
+.fi
+.PP
+List available profiles:
+.PP
+.nf
+.RS
+postout \-\-profile\-list
+.RE
+.fi
+.PP
+Send a simple message:
+.PP
+.nf
+.RS
+postout \-\-profile work \e
+    \-\-to recipient@example.com \e
+    \-\-subject "Backup completed" \e
+    \-\-body "The nightly backup completed successfully."
+.RE
+.fi
+.PP
+Send an HTML message:
+.PP
+.nf
+.RS
+postout \-\-profile work \e
+    \-\-to recipient@example.com \e
+    \-\-subject "Service report" \e
+    \-\-html "<h1>Service report</h1><p>All checks passed.</p>"
+.RE
+.fi
+.PP
+Send a message with an attachment:
+.PP
+.nf
+.RS
+postout \-\-profile work \e
+    \-\-to recipient@example.com \e
+    \-\-subject "Monthly report" \e
+    \-\-body "The monthly report is attached." \e
+    \-\-attach report.pdf
+.RE
+.fi
+.PP
+Expire cached sudo authentication and test system configuration elevation:
+.PP
+.nf
+.RS
+sudo \-k
+postout config \-\-system
+.RE
+.fi
+.SH FILES
+.TP
+.I ~/.config/postout/profiles.json
+Personal SMTP profiles.
+When
+.B XDG_CONFIG_HOME
+is set, Postout uses
+.IR $XDG_CONFIG_HOME/postout/profiles.json .
+.TP
+.I /etc/postout/profiles.json
+Shared system SMTP profiles.
+.TP
+.I /usr/share/postout/
+Installed Postout Python package files on Debian-based systems.
+.SH SYSTEM PROFILE ACCESS
+The
+.I /etc/postout
+directory and system profiles are protected by filesystem permissions.
+.PP
+Members of the
+.B postout
+Unix group can read and use all configured system SMTP profiles, including
+their stored SMTP credentials.
+.PP
+After a user is added to the group, that user may need to log out and back in
+before the new group membership becomes active.
+.SH SECURITY
+Prefer stored profiles over supplying SMTP passwords directly on the command
+line.
+Command-line arguments may be visible in shell history or process listings.
+.PP
+Personal profile files should remain readable only by their owner.
+System profiles should remain restricted to root and members of the
+.B postout
+group.
+.PP
+Postout transmits HTML content as supplied.
+Only send trusted HTML.
+.PP
+For Gmail and other providers that support application-specific passwords,
+use an application password rather than the account's primary password.
+.SH EXIT STATUS
+.TP
+.B 0
+The requested operation completed successfully.
+.TP
+.B non-zero
+Configuration, validation, file, SMTP, authentication, permission, or message
+delivery failure.
+.SH SEE ALSO
+.BR sendmail (1),
+.BR mail (1),
+.BR systemd.service (5),
+.BR crontab (5)
+.SH AUTHOR
+Postout is maintained by DEVOPS CY.
+.PP
+Email:
+.MT info@devops.com.cy
+info@devops.com.cy
+.ME
+.PP
+Website:
+.UR https://devops.com.cy
+https://devops.com.cy
+.UE

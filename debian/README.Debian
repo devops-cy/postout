@@ -1,0 +1,53 @@
+Postout for Debian, Ubuntu, and Linux Mint
+==========================================
+
+Postout is maintained by DEVOPS CY:
+
+    devops.com.cy
+
+
+Personal SMTP profiles
+----------------------
+
+Run:
+
+    postout config
+
+Personal profiles are stored under:
+
+    ~/.config/postout/profiles.json
+
+These files belong to individual users. Package removal and purge do
+not alter configuration inside user home directories.
+
+
+System SMTP profiles
+--------------------
+
+Run:
+
+    postout config --system
+
+Postout requests administrator access and stores shared profiles under:
+
+    /etc/postout/profiles.json
+
+Shared credentials are readable by root and members of the postout
+system group. Existing login sessions may need to be restarted after
+group membership is added. Alternatively, the user may run:
+
+    newgrp postout
+
+
+Removal behaviour
+-----------------
+
+Ordinary removal preserves shared system configuration:
+
+    sudo apt remove postout
+
+Complete purge removes /etc/postout:
+
+    sudo apt purge postout
+
+Neither operation removes personal profiles from user home directories.

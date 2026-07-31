@@ -1,0 +1,13 @@
+#!/usr/bin/python3
+"""System launcher for the Debian Postout package."""
+
+import sys
+
+
+sys.path.insert(0, "/usr/share/postout")
+
+from postout.cli import entrypoint  # noqa: E402
+
+
+if __name__ == "__main__":
+    raise SystemExit(entrypoint())
