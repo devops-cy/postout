@@ -17,6 +17,8 @@ from email.utils import formataddr, getaddresses, parseaddr
 from html.parser import HTMLParser
 from pathlib import Path
 
+from . import __version__
+
 try:
     import readline  # noqa: F401
 except ImportError:
@@ -2350,6 +2352,13 @@ Body input:
         ),
         epilog=examples,
         formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+
+    p.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        help="Show version and exit",
     )
 
     profile_group = p.add_argument_group("Profile and configuration")
