@@ -212,6 +212,108 @@ class ProfileTests(unittest.TestCase):
                 ),
             )
 
+    def test_from_email_follows_changed_matching_smtp_username(self):
+        from_defaults = []
+
+        def fake_prompt_text(label, default=None, required=False):
+            if label == "SMTP host":
+                return default
+            if label == "SMTP port":
+                return str(default)
+            if label == "SMTP username":
+                return "new@example.com"
+            if label == "From email":
+                from_defaults.append(default)
+                return default
+
+            self.fail(f"Unexpected prompt: {label}")
+
+        existing = {
+            "smtp_host": "smtp.gmail.com",
+            "smtp_port": 465,
+            "smtp_ssl": True,
+            "smtp_starttls": False,
+            "smtp_auth": True,
+            "smtp_user": "old@example.com",
+            "smtp_pass": "existing-secret",
+            "from_email": "old@example.com",
+        }
+
+        with (
+            patch.object(cli, "prompt_text", side_effect=fake_prompt_text),
+            patch.object(cli, "prompt_security", return_value="ssl"),
+            patch.object(cli, "prompt_yes_no", return_value=True),
+            patch.object(
+                cli,
+                "prompt_password",
+                return_value="existing-secret",
+            ),
+        ):
+            profile = cli.collect_profile(
+                existing,
+                display_name_default="[diskcapd]",
+            )
+
+        self.assertEqual(
+            from_defaults,
+            ["new@example.com"],
+        )
+        self.assertEqual(
+            profile["from_email"],
+            "new@example.com",
+        )
+
+    def test_custom_from_email_survives_smtp_username_change(self):
+        from_defaults = []
+
+        def fake_prompt_text(label, default=None, required=False):
+            if label == "SMTP host":
+                return default
+            if label == "SMTP port":
+                return str(default)
+            if label == "SMTP username":
+                return "new@example.com"
+            if label == "From email":
+                from_defaults.append(default)
+                return default
+
+            self.fail(f"Unexpected prompt: {label}")
+
+        existing = {
+            "smtp_host": "smtp.gmail.com",
+            "smtp_port": 465,
+            "smtp_ssl": True,
+            "smtp_starttls": False,
+            "smtp_auth": True,
+            "smtp_user": "old@example.com",
+            "smtp_pass": "existing-secret",
+            "from_email": "alerts@example.com",
+        }
+
+        with (
+            patch.object(cli, "prompt_text", side_effect=fake_prompt_text),
+            patch.object(cli, "prompt_security", return_value="ssl"),
+            patch.object(cli, "prompt_yes_no", return_value=True),
+            patch.object(
+                cli,
+                "prompt_password",
+                return_value="existing-secret",
+            ),
+        ):
+            profile = cli.collect_profile(
+                existing,
+                display_name_default="[diskcapd]",
+            )
+
+        self.assertEqual(
+            from_defaults,
+            ["alerts@example.com"],
+        )
+        self.assertEqual(
+            profile["from_email"],
+            "alerts@example.com",
+        )
+
 
 class CliPresentationTests(unittest.TestCase):
     def test_welcome_screen_contains_setup_guidance(self):

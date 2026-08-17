@@ -1310,11 +1310,13 @@ def collect_profile(
         smtp_user = ""
         smtp_pass = ""
 
-    from_default = (
-        existing.get("from_email")
-        or smtp_user
-        or None
-    )
+    existing_user = existing.get("smtp_user", "")
+    existing_from = existing.get("from_email", "")
+
+    if existing_from and existing_from == existing_user and smtp_user:
+        from_default = smtp_user
+    else:
+        from_default = existing_from or smtp_user or None
 
     while True:
         from_email = prompt_text(

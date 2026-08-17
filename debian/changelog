@@ -1,3 +1,9 @@
+postout (1.0.0-5) unstable; urgency=medium
+
+  * Update the default From address when a matching SMTP username changes.
+
+ -- DEVOPS CY <info@devops.com.cy>  Mon, 17 Aug 2026 17:53:55 +0300
+
 postout (1.0.0-4) unstable; urgency=medium
 
   * Add direct profile configuration for application integrations.
