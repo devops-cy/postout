@@ -1907,18 +1907,13 @@ def build_config_arg_parser():
         "--profile",
         metavar="NAME",
         default="",
-        help=(
-            "Create or edit profile NAME directly instead of "
-            "opening the configuration menu"
-        ),
+        help=argparse.SUPPRESS,
     )
     parser.add_argument(
         "--display-name",
         metavar="TEXT",
         default="",
-        help=(
-            "Suggested display name when configuring --profile"
-        ),
+        help=argparse.SUPPRESS,
     )
     return parser
 

@@ -72,7 +72,7 @@ Clone the repository and install the packaged release:
 git clone https://github.com/devops-cy/postout.git
 cd postout
 
-sudo dpkg -i packages/postout_1.0.0-1_all.deb
+sudo dpkg -i packages/postout_1.0.0-4_all.deb
 sudo apt-get install -f
 ```
 
@@ -199,6 +199,39 @@ newgrp postout
 ```
 
 Services running under an account that has just received access must be restarted.
+
+### Advanced application integration
+
+Applications can ask Postout to configure a specific profile directly without
+opening the normal configuration menu.
+
+For example:
+
+```bash
+sudo postout config --system \
+    --profile myapp \
+    --display-name myapp
+```
+
+If the named profile does not exist, Postout opens the profile creation workflow
+directly. If it already exists, Postout opens that profile for editing.
+
+When `--profile` and `--display-name` are supplied by the calling application,
+the user is not prompted for those values. The user still supplies the SMTP
+server, security mode, port, authentication details, sender address, and other
+SMTP settings.
+
+Postout continues to own profile validation, credential storage, permissions,
+and updates to the profile store. Applications should not write Postout profile
+files directly.
+
+These options are intended primarily for application integration and are
+therefore not shown in the normal `postout config --help` output.
+
+After configuration, an application can test the profile by sending a normal
+message through Postout and checking the exit status. Exit status `0` means the
+SMTP submission completed successfully. It does not guarantee final delivery
+to the recipient's inbox.
 
 ## Profile selection
 

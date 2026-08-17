@@ -1,3 +1,11 @@
+postout (1.0.0-4) unstable; urgency=medium
+
+  * Add direct profile configuration for application integrations.
+  * Allow callers to predefine profile and display name while keeping SMTP setup interactive.
+  * Keep application-integration configuration options out of normal config help.
+
+ -- DEVOPS CY <info@devops.com.cy>  Mon, 17 Aug 2026 13:05:00 +0300
+
 postout (1.0.0-3) unstable; urgency=medium
 
   * Support Debian 11 and Python 3.9.
