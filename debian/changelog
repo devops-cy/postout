@@ -1,3 +1,10 @@
+postout (1.0.0-2) unstable; urgency=medium
+
+  * Add --version option.
+  * Document installation from the DEVOPS CY APT repository.
+
+ -- DEVOPS CY <info@devops.com.cy>  Mon, 17 Aug 2026 10:10:45 +0300
+
 postout (1.0.0-1) unstable; urgency=medium
 
   * Publish the first stable Postout release.
