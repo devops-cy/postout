@@ -26,10 +26,10 @@ Postout uses reusable SMTP profiles so that connection settings and passwords do
 
 Postout supports:
 
-- Debian 12 or later
+- Debian 11 or later
 - Ubuntu 22.04 or later
 - Compatible Linux Mint releases
-- Python 3.10 or later
+- Python 3.9 or later
 
 The packaged Debian installation also uses standard Unix account and group-management tools.
 

@@ -25,3 +25,6 @@ override_dh_auto_install:
 
 override_dh_python3:
 	dh_python3 /usr/share/postout
+
+override_dh_builddeb:
+	dh_builddeb -- -Zxz

@@ -15,7 +15,7 @@ Architecture: all
 Depends:
  ${misc:Depends},
  ${python3:Depends},
- python3 (>= 3.10),
+ python3 (>= 3.9),
  passwd
 Recommends:
  sudo

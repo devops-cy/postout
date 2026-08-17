@@ -1,3 +1,10 @@
+postout (1.0.0-3) unstable; urgency=medium
+
+  * Support Debian 11 and Python 3.9.
+  * Build Debian archives using xz compression for Debian 11 compatibility.
+
+ -- DEVOPS CY <info@devops.com.cy>  Mon, 17 Aug 2026 11:05:31 +0300
+
 postout (1.0.0-2) unstable; urgency=medium
 
   * Add --version option.
