@@ -35,7 +35,36 @@ The packaged Debian installation also uses standard Unix account and group-manag
 
 ## Installation
 
-### Install the Debian package
+### Install from the DEVOPS CY APT repository
+
+This is the recommended installation method for supported Debian, Ubuntu, and
+Linux Mint systems.
+
+Add the DEVOPS CY package repository:
+
+```bash
+sudo install -d -m 0755 /etc/apt/keyrings
+
+curl -fsSL https://packages.devops.com.cy/devops-cy-archive-keyring.gpg \
+  | sudo tee /etc/apt/keyrings/devops-cy-archive-keyring.gpg >/dev/null
+
+echo "deb [signed-by=/etc/apt/keyrings/devops-cy-archive-keyring.gpg] https://packages.devops.com.cy/ devops-cy main" \
+  | sudo tee /etc/apt/sources.list.d/devops-cy.list >/dev/null
+
+sudo apt update
+sudo apt install postout
+```
+
+Once the repository is configured, future Postout updates are delivered through
+the normal APT upgrade process.
+
+The DEVOPS CY archive signing key fingerprint is:
+
+```text
+21ED 038C 18F1 DE46 8A36  6C3B 3742 2B90 4698 4C12
+```
+
+### Install the standalone Debian package
 
 Clone the repository and install the packaged release:
 
