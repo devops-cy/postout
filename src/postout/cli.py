@@ -1235,7 +1235,10 @@ def profile_authentication(
     return smtp_auth
 
 
-def collect_profile(existing=None) -> dict:
+def collect_profile(
+    existing=None,
+    display_name_default: str = "",
+) -> dict:
     existing = dict(existing or {})
 
     smtp_host = prompt_text(
@@ -1328,10 +1331,13 @@ def collect_profile(existing=None) -> dict:
             file=sys.stderr,
         )
 
-    display_name = prompt_text(
-        "Display name",
-        existing.get("display_name", ""),
-    )
+    if display_name_default:
+        display_name = display_name_default
+    else:
+        display_name = prompt_text(
+            "Display name",
+            existing.get("display_name", ""),
+        )
 
     updated = dict(existing)
     updated.update(
@@ -1451,35 +1457,57 @@ def choose_profile(profiles: dict, action: str):
         print("That profile number does not exist.", file=sys.stderr)
 
 
+
 def add_profile(
     path: Path,
     document: dict,
     system: bool = False,
+    requested_name: str = "",
+    display_name_default: str = "",
 ) -> bool:
     profiles = document["profiles"]
 
     print("\nAdd profile")
 
-    while True:
-        name = prompt_text("Profile name", required=True)
+    if requested_name:
+        name = requested_name
 
         if not PROFILE_NAME_RE.fullmatch(name):
-            print(
-                "Use letters, numbers, dot, underscore, or hyphen.",
-                file=sys.stderr,
+            die(
+                "Profile names may contain only letters, numbers, "
+                "dot, underscore, or hyphen.",
+                2,
             )
-            continue
 
         if name in profiles:
-            print(
-                f"Profile '{name}' already exists. Use Edit profile.",
-                file=sys.stderr,
+            die(
+                f"Profile '{name}' already exists.",
+                2,
             )
-            continue
 
-        break
+    else:
+        while True:
+            name = prompt_text("Profile name", required=True)
 
-    profile = collect_profile()
+            if not PROFILE_NAME_RE.fullmatch(name):
+                print(
+                    "Use letters, numbers, dot, underscore, or hyphen.",
+                    file=sys.stderr,
+                )
+                continue
+
+            if name in profiles:
+                print(
+                    f"Profile '{name}' already exists. Use Edit profile.",
+                    file=sys.stderr,
+                )
+                continue
+
+            break
+
+    profile = collect_profile(
+        display_name_default=display_name_default,
+    )
     print_profile_summary(name, profile)
 
     if not prompt_yes_no(f"Save profile '{name}'?", True):
@@ -1499,15 +1527,31 @@ def edit_profile(
     path: Path,
     document: dict,
     system: bool = False,
+    requested_name: str = "",
+    display_name_default: str = "",
 ) -> None:
     profiles = document["profiles"]
-    name = choose_profile(profiles, "edit")
 
-    if name is None:
-        return
+    if requested_name:
+        name = requested_name
+
+        if name not in profiles:
+            die(
+                f"Profile '{name}' does not exist.",
+                2,
+            )
+    else:
+        name = choose_profile(profiles, "edit")
+
+        if name is None:
+            return
 
     print(f"\nEdit profile: {name}")
-    profile = collect_profile(profiles[name])
+
+    profile = collect_profile(
+        profiles[name],
+        display_name_default=display_name_default,
+    )
     print_profile_summary(name, profile)
 
     if not prompt_yes_no(f"Save changes to '{name}'?", True):
@@ -1859,7 +1903,70 @@ def build_config_arg_parser():
             "administrator access is requested with sudo"
         ),
     )
+    parser.add_argument(
+        "--profile",
+        metavar="NAME",
+        default="",
+        help=(
+            "Create or edit profile NAME directly instead of "
+            "opening the configuration menu"
+        ),
+    )
+    parser.add_argument(
+        "--display-name",
+        metavar="TEXT",
+        default="",
+        help=(
+            "Suggested display name when configuring --profile"
+        ),
+    )
     return parser
+
+
+
+def run_profile_config(
+    profile_name: str,
+    system: bool = False,
+    display_name: str = "",
+) -> None:
+    """Create or edit one explicitly requested profile."""
+
+    if not PROFILE_NAME_RE.fullmatch(profile_name):
+        die(
+            "Profile names may contain only letters, numbers, "
+            "dot, underscore, or hyphen.",
+            2,
+        )
+
+    if system:
+        ensure_system_storage()
+        path = SYSTEM_PROFILES_PATH
+    else:
+        path = default_profiles_path()
+
+    document = load_profiles_document(path)
+    profiles = document["profiles"]
+
+    if profile_name in profiles:
+        edit_profile(
+            path,
+            document,
+            system=system,
+            requested_name=profile_name,
+            display_name_default=display_name,
+        )
+        return
+
+    created = add_profile(
+        path,
+        document,
+        system=system,
+        requested_name=profile_name,
+        display_name_default=display_name,
+    )
+
+    if system and created:
+        grant_system_profile_access()
 
 
 def run_config_menu(system: bool = False) -> None:
@@ -2592,12 +2699,26 @@ def main():
         return
 
     if len(sys.argv) > 1 and sys.argv[1] == "config":
-        config_args = build_config_arg_parser().parse_args(
+        config_parser = build_config_arg_parser()
+        config_args = config_parser.parse_args(
             sys.argv[2:]
         )
 
+        if config_args.display_name and not config_args.profile:
+            config_parser.error(
+                "--display-name requires --profile"
+            )
+
         if config_args.system:
             require_system_privileges()
+
+        if config_args.profile:
+            run_profile_config(
+                config_args.profile,
+                system=config_args.system,
+                display_name=config_args.display_name,
+            )
+            return
 
         run_config_menu(system=config_args.system)
         return
